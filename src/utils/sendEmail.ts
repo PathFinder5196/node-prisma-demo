@@ -4,7 +4,7 @@ sendgrid.setApiKey(process.env.SENDGRID_API_KEY!)
 export async function sendEmailToken(email: string, subject: string, body: string) {
     const msg = {
         to: email,
-        from: 'jondoe@gmail.com',
+        from: 'demo@gmail.com',
         subject,
         text: body,
     }

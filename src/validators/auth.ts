@@ -21,6 +21,7 @@ export const activateAccountSchema = Joi.object({
 
 export const resetPasswordSchema = Joi.object({
   password: Joi.string().min(8).required(),
+  token: Joi.string().required(),
 });
 
 export const signinSchema = Joi.object({

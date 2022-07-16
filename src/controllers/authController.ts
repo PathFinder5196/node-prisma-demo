@@ -34,9 +34,10 @@ export const signUp = async (req: Request, res: Response) => {
             minutes: EMAIL_TOKEN_EXPIRATION_MINUTES,
         })
 
+        const activationToken = generateEmailToken()
         await prisma.token.create({
             data: {
-                token: generateEmailToken(),
+                token: activationToken,
                 type: TokenType.ACTIVATION,
                 expiration: tokenExpiration,
                 user: {
@@ -46,6 +47,8 @@ export const signUp = async (req: Request, res: Response) => {
                 },
             },
         })
+
+        await sendEmailToken(email, 'Activate Account', `The account activation token is: ${activationToken}`);
 
         const { password, ...newUser } = user;
         res.status(201).json({ success: true, data: newUser, message: 'Account is created succesfully' });
@@ -223,8 +226,7 @@ export const forgotPassword = async (req: Request, res: Response) => {
 
 export const resetPassword = async (req: Request, res: Response) => {
     try {
-        const { token } = req.query;
-        const { password } = req.body;
+        const { password, token } = req.body;
 
         if (!token) {
             throw new BadRequestError('Token not found');
